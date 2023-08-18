@@ -1,0 +1,156 @@
+#!/usr/bin/python3
+"""
+doc
+"""
+import cmd
+from models.base_model import BaseModel
+from models import storage
+
+
+class HBNBCommand(cmd.Cmd):
+    """
+    doc
+    """
+    prompt = "(hbnb) "
+    classes = ("BaseModel",)
+
+    def do_quit(self, arg):
+        """
+        doc
+        """
+        return True
+
+    def do_EOF(self, arg):
+        """
+        doc
+        """
+        return True
+
+    def do_emptyline(self, arg):
+        """
+        doc
+        """
+        pass
+
+    def do_create(self, arg):
+        """
+        doc
+        """
+        if len(arg) == 0:
+            print("** class name missing **")
+            return
+        if arg.strip() in HBNBCommand.classes:
+            obj = eval(arg.strip())()
+            storage.new(obj)
+            storage.save()
+            print(obj.id)
+        else:
+            print("** class doesn't exist **")
+
+    def do_all(self, arg):
+        """
+        doc
+        """
+        my_list = []
+        args = arg.split()
+        if len(args) >= 1:
+            if args[0] in HBNBCommand.classes:
+                key = args[0]
+                for k, v in storage.all().items():
+                    if k.startswith(key):
+                        my_list.append(v)
+                print(my_list)
+            else:
+                print("** class doesn't exist **")
+        elif len(args) == 0:
+            for values in storage.all().values():
+                my_list.append(values)
+            print([str(my_list) ])
+
+    def do_show(self, arg):
+        """
+        doc
+        """
+        args = arg.split()
+        if len(args) >= 2:
+            if args[0] not in HBNBCommand.classes:
+                print("** class doesn't exist **")
+            else:
+                key = args[0] + "." + args[1]
+                if key in storage.all():
+                    print(storage.all().get(key))
+                else:
+                    print("** no instance found **")
+        elif len(args) == 1:
+            if args[0] not in HBNBCommand.classes:
+                print("** class doesn't exist **")
+            else:
+                print("** instance id missing **")
+        elif len(args) == 0:
+            print("** class name missing **")
+
+    def do_destroy(self, arg):
+        """
+        doc
+        """
+        args = arg.split()
+        if len(args) >= 2:
+            if args[0] in HBNBCommand.classes:
+                key = args[0] + "." + args[1]
+                if key in storage.all():
+                    del(storage.all()[key])
+                else:
+                    print("** no instance found **")
+            else:
+                print("** class doesn't exist **")
+        elif len(args) == 1:
+            if args[0] in HBNBCommand.classes:
+                print("** instance id missing **")
+            else:
+                print("** class doesn't exist **")
+        elif len(args) == 0:
+            print("** class name missing **")
+
+    def do_update(self, arg):
+        """
+        doc
+        """
+        args = arg.split()
+        if len(args) >= 4:
+            if args[0] in HBNBCommand.classes:
+                key = args[0] + "." + args[1]
+                if key in storage.all():
+                    storage.all()[key][args[2]] = str(args[3].strip('"'))
+                else:
+                    print("** no instance found **")
+            else:
+                print("** class doesn't exist **")
+        elif len(args) == 3:
+            if args[0] in HBNBCommand.classes:
+                key = args[0] + "." + args[1]
+                if key in storage.all():
+                    print("** value missing **")
+                else:
+                    print("** no instance found **")
+            else:
+                print("** class doesn't exist **")
+        elif len(args) == 2:
+            if args[0] in HBNBCommand.classes:
+                key = args[0] + "." + args[1]
+                if key in storage.all():
+                    print("** attribute name missing **")
+                else:
+                    print("** no instance found **")
+            else:
+                print("** class doesn't exist **")
+        elif len(args) == 1:
+            if args[0] in HBNBCommand.classes:
+                print("** instance id missing **")
+            else:
+                print("** class doesn't exist **")
+        elif len(args) == 0:
+            print("** class name missing **")
+
+
+if __name__ == '__main__':
+    HBNBCommand().cmdloop()
