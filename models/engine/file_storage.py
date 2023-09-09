@@ -60,5 +60,4 @@ class FileStorage():
     def destroy(self, key):
         if key in FileStorage.__objects:
             del (FileStorage.__objects[key])
-        with open(FileStorage.__file_path, "w") as f:
-            json.dump(FileStorage.__objects, f)
+        self.save()
