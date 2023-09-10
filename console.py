@@ -41,7 +41,7 @@ class HBNBCommand(cmd.Cmd):
             pass
         else:
             if arg.split()[0] in ("update", "count", "all", "create",
-                                  "show", "destroy", "count"):
+                                  "show", "destroy"):
                 return arg
             else:
                 myclass = arg.split(".")[0]
